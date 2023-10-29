@@ -46,7 +46,7 @@ public:
         for (int i = 0; i < size; i++) {
             for (int j = 1; j < size; j++) {
                 if (!board[i][j].isEmpty()) {
-                    // k permet de ne pas faire 2 fusions cons�cutive
+                    //  k permet de ne pas faire 2 fusions consécutive
                     int k = j;
                     while (k > 0 && board[i][k - 1].isEmpty()) {
                         k--;
@@ -131,6 +131,7 @@ public:
     }
 
     void checkWin() {
+        //  si 2048 atteind win
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (board[i][j].getValue() == 2048) {
@@ -142,99 +143,35 @@ public:
     }
     void checkLoose() {
         int loose = 0;
+
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (j == 0) {
-                    if (i == 0) {
-                        if (board[i][j].getValue() != board[i + 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j + 1].getValue() &&
-                            !board[i][j].isEmpty()) {
-                            loose++;
-                        }
-                    }
-                    else if (i > 0 && i < 3) {
-                        if (board[i][j].getValue() != board[i + 1][j].getValue() &&
-                            board[i][j].getValue() != board[i - 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j + 1].getValue() &&
-                            !board[i][j].isEmpty()) {
-                            loose++;
-                        }
-                    }
-                    else if (i == 3) {
-                        if (board[i][j].getValue() != board[i - 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j + 1].getValue() &&
-                            !board[i][j].isEmpty()) {
-                            loose++;
-                        }
-                    }
+                if (board[i][j].isEmpty()) {
+                    return; // si case vide, le jeu n'est pas perdu
                 }
-                else if (j > 0 && j < 3) {
-                    if (i == 0) {
-                        if (board[i][j].getValue() != board[i][j - 1].getValue() &&
-                            board[i][j].getValue() != board[i + 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j + 1].getValue() &&
-                            !board[i][j].isEmpty()) {
-                            loose++;
-                        }
-                    }
-                    else if (i > 0 && i < 3) {
-                        if (board[i][j].getValue() != board[i - 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j - 1].getValue() &&
-                            board[i][j].getValue() != board[i + 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j + 1].getValue() &&
-                            !board[i][j].isEmpty()) {
-                            loose++;
-                        }
-                    }
-                    else if (i == 3) {
-                        if (board[i][j].getValue() != board[i][j - 1].getValue() &&
-                            board[i][j].getValue() != board[i - 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j + 1].getValue() &&
-                            !board[i][j].isEmpty()) {
-                            loose++;
-                        }
-                    }
+
+                if (i < size - 1 && board[i][j].getValue() == board[i + 1][j].getValue()) {
+                    return; // si tuile fusionnable en bas, le jeu n'est pas perdu
                 }
-                else if (j == 3) {
-                    if (i == 0) {
-                        if (board[i][j].getValue() != board[i + 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j - 1].getValue() &&
-                            !board[i][j].isEmpty()) {
-                            loose++;
-                        }
-                    }
-                    else if (i > 0 && i < 3) {
-                        if (board[i][j].getValue() != board[i + 1][j].getValue() &&
-                            board[i][j].getValue() != board[i - 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j - 1].getValue() &&
-                            !board[i][j].isEmpty()) {
-                            loose++;
-                        }
-                    }
-                    else if (i == 3) {
-                        if (board[i][j].getValue() != board[i - 1][j].getValue() &&
-                            board[i][j].getValue() != board[i][j - 1].getValue() &&
-                            !board[i][j].isEmpty()) {
-                            loose++;
-                        }
-                    }
+
+                if (j < size - 1 && board[i][j].getValue() == board[i][j + 1].getValue()) {
+                    return; //si tuile fusionnable à droite, le jeu n'est pas perdu
                 }
             }
         }
-        if (loose == size * size) {
-            std::cout << "\nYOU LOSE !!!" << std::endl;
-        }
+        std::cout << "\nYOU LOSE !!!" << std::endl;
     }
 };
 
-void performAction(Grid& game, void (Grid::* action)()) {
-    (game.*action)();
-    game.addRandomTile();
-    game.printBoard();
-    game.checkWin();
-    game.checkLoose();
-    Sleep(100);
-}
+
+    void performAction(Grid& game, void (Grid::* action)()) {
+        (game.*action)();
+        game.addRandomTile();
+        game.printBoard();
+        game.checkWin();
+        game.checkLoose();
+        Sleep(100);
+    }
 
 int main() {
     Grid game(4);
